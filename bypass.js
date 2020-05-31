@@ -1,26 +1,31 @@
 javascript: (function () {
   const sites = {
     twitter: {
-      url: "https://twitter.com/",
-      regex: /https:\/\/twitter.com\/[^/?]*/,
+      regex: /https:\/\/(www\.)?twitter.com\/[^/?]*/,
     },
     imgur: {
-      url: "https://imgur.com/",
-      regex: /https:\/\/imgur.com\/[^/?]*/,
+      regex: /https:\/\/(www\.)?imgur.com\/[^/?]*/,
       getBypassLink: () => {
         const id = window.location.href.slice(18);
-        const link = `https://i.imgur.com/${id}.jpg`;
-        return link;
-      }  
+        return `https://i.imgur.com/${id}.jpg`;
+      },
+    },
+    youtube: {
+      regex: /https:\/\/(www\.)?youtube.com\/[^/?]*/,
+      getBypassLink: () => {
+        const videoUrl = window.location.href;
+        const cleanedVideoUrl = videoUrl.slice(videoUrl.indexOf("youtube"));
+        return `https://nsfw${cleanedVideoUrl}`;
+      },
     },
   };
-    const currentUrl = window.location.href;
-    if (sites.imgur.regex.test(currentUrl)){
-        url = sites.imgur.getBypassLink();
-    }else return;
 
-    window.open(url, "_self", "noopener");
+  const currentUrl = window.location.href;
+  if (sites.imgur.regex.test(currentUrl)) {
+    url = sites.imgur.getBypassLink();
+  } else if (sites.youtube.regex.test(currentUrl)) {
+    url = sites.youtube.getBypassLink();
+  } else return;
 
-
-
+  window.open(url, "_self", "noopener");
 })();
